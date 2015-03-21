@@ -13,7 +13,12 @@ type RestApiDescription struct {
 type RestApiDescriptions []RestApiDescription
 
 func Where(list []RestApiDescription, predicate func(RestApiDescription) bool) []RestApiDescription {
+	if predicate == nil {
+		return list
+	}
+
 	var results = []RestApiDescription{}
+
 	for j := 0; j < len(list); j++ {
 		if predicate(list[j]) {
 			results = append(results, list[j])
@@ -25,6 +30,10 @@ func Where(list []RestApiDescription, predicate func(RestApiDescription) bool) [
 
 func Skip(list []RestApiDescription, number int) []RestApiDescription {
 	var results = []RestApiDescription{}
+	if number < 0 {
+		return results
+	}
+
 	for j := number; j < len(list); j++ {
 		results = append(results, list[j])
 	}
