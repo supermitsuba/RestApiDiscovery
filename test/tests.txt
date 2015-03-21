@@ -1,0 +1,36 @@
+What happens if the file is not there?
+What happens if the file is corrupted?
+What happens if the file is empty?
+What happens if the file has 1 or more items?
+
+What happens if I Query for location?
+What happens if I Query for Multiple locations?
+What happens if I Query for environments?
+What happens if I Query for Multiple environments?
+What happens if I Query for qs?
+What happens if I Query for Multiple qs?
+What happens if I Query for totalrecords?
+What happens if I Query for Multiple totalrecords?
+What happens if I Query for page?
+What happens if I Query for Multiple page?
+What happens if I Query for isactive?
+What happens if I Query for Multiple isactive?
+
+What happens if I Query for int64, or other type page?
+What happens if I Query for int64, or other type totalRecords?
+
+What happens if I Query for detail?
+What happens if I Query for Multiple detail?
+What happens if I Query for a detail not listed?
+
+What happens if I write a record?
+Insert - What happens if I put wrong IsActive, or Detail, or Id?
+Insert - What happens to Url if it is not a valid Url?
+Insert - What if the body is blank?  What if it is malformed?
+
+What happens if you try to update a record?
+Update - What happens if I put wrong IsActive, or Detail, or Id?
+Update - What happens to Url if it is not a valid Url?
+Update - What if the body is blank?  What if it is malformed?
+
+What happens if I try to delete a record?  What if that record does not exist?
