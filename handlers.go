@@ -13,24 +13,45 @@ import (
 var locationOfFile = "data/apis.json"
 
 func Get_RestApiRecords(w http.ResponseWriter, r *http.Request) {
-	var restApis = GetFileOfRestApiDescriptions(locationOfFile)
+	if w == nil || r == nil {
+		return
+	}
 
 	var location = r.URL.Query()["location"]
-	fmt.Printf("Locations to filter on: %v, Number is: %v\n", location, len(location))
+	var environment = r.URL.Query()["environment"]
+	var q = r.URL.Query()["q"]
+	//var detail = r.URL.Query()["detail"]             // default is return summary, not detail
+	var page = r.URL.Query()["page"]                 // default is 0
+	var totalRecords = r.URL.Query()["totalRecords"] // default is 100
+	var isActive = r.URL.Query()["isActive"]         // default is all, true is all active and false is all inactive
+
+	Get_RestApiRecords_Impl(location, environment, q, page, totalRecords, isActive, w)
+}
+
+func Get_RestApiRecords_Impl(location []string,
+	environment []string,
+	q []string,
+	page []string,
+	totalRecords []string,
+	isActive []string,
+	w http.ResponseWriter) {
+
+	if w == nil {
+		return
+	}
+
+	var restApis = GetFileOfRestApiDescriptions(locationOfFile)
+
 	for j := 0; j < len(location); j++ {
 		fmt.Printf("Where Location == %v\n", location[j])
 		restApis = Where(restApis, func(item RestApiDescription) bool { return strings.Contains(item.Location, location[j]) })
 	}
 
-	var environment = r.URL.Query()["environment"]
-	fmt.Printf("Environment to filter on: %v, Number is: %v\n", environment, len(environment))
 	for j := 0; j < len(environment); j++ {
 		fmt.Printf("Where Environment == %v\n", environment[j])
 		restApis = Where(restApis, func(item RestApiDescription) bool { return strings.Contains(item.Environment, environment[j]) })
 	}
 
-	var q = r.URL.Query()["q"]
-	fmt.Printf("Search to filter on: %v, Number is: %v\n", q, len(q))
 	for j := 0; j < len(q); j++ {
 		restApis = Where(restApis, func(item RestApiDescription) bool {
 			var toLower = strings.ToLower(q[j])
@@ -41,9 +62,6 @@ func Get_RestApiRecords(w http.ResponseWriter, r *http.Request) {
 		})
 	} // default should be everything
 
-	//var detail = r.URL.Query()["detail"]             // default is return summary, not detail
-
-	var page = r.URL.Query()["page"] // default is 0
 	var pageNumber = 0
 
 	if len(page) > 0 {
@@ -51,7 +69,6 @@ func Get_RestApiRecords(w http.ResponseWriter, r *http.Request) {
 		pageNumber = int(temp)
 	}
 
-	var totalRecords = r.URL.Query()["totalRecords"] // default is 100
 	var totalRecordsNumber = 100
 
 	if len(totalRecords) > 0 {
@@ -62,10 +79,7 @@ func Get_RestApiRecords(w http.ResponseWriter, r *http.Request) {
 	restApis = Skip(restApis, pageNumber*totalRecordsNumber)
 	restApis = Take(restApis, totalRecordsNumber)
 
-	var isActive = r.URL.Query()["isActive"] // default is all, true is all active and false is all inactive
-	fmt.Printf("IsActive to filter on: %v, Number is: %v\n", isActive, len(isActive))
 	for j := 0; j < len(isActive); j++ {
-		fmt.Printf("Where isActive == %v\n", isActive[j])
 		restApis = Where(restApis, func(item RestApiDescription) bool {
 			var isBool, err = strconv.ParseBool(isActive[j])
 			return err != nil && item.IsActive == isBool
@@ -76,10 +90,22 @@ func Get_RestApiRecords(w http.ResponseWriter, r *http.Request) {
 }
 
 func Post_RestApiRecords(w http.ResponseWriter, r *http.Request) {
+	if w == nil || r == nil {
+		return
+	}
+
 	var x = new(RestApiDescription)
-	var xList = GetFileOfRestApiDescriptions(locationOfFile)
 	json.NewDecoder(r.Body).Decode(x)
 
+	Post_RestApiRecords_Impl(x, w)
+}
+
+func Post_RestApiRecords_Impl(x *RestApiDescription, w http.ResponseWriter) {
+	if w == nil {
+		return
+	}
+
+	var xList = GetFileOfRestApiDescriptions(locationOfFile)
 	x.Id = uuid.New()
 	fmt.Printf("Inserting: %v\n", x)
 	xList = append(xList, *x)
@@ -89,12 +115,22 @@ func Post_RestApiRecords(w http.ResponseWriter, r *http.Request) {
 }
 
 func Put_RestApiRecords(w http.ResponseWriter, r *http.Request) {
+	if w == nil || r == nil {
+		return
+	}
+
 	var x = new(RestApiDescription)
 	json.NewDecoder(r.Body).Decode(x)
 	x.Id = GetId(r)
+	Put_RestApiRecords_Impl(x, w)
+}
+
+func Put_RestApiRecords_Impl(x *RestApiDescription, w http.ResponseWriter) {
+	if w == nil {
+		return
+	}
 
 	var xList = GetFileOfRestApiDescriptions(locationOfFile)
-
 	var index = Find(xList, x.Id)
 
 	if index == -1 {
@@ -108,7 +144,19 @@ func Put_RestApiRecords(w http.ResponseWriter, r *http.Request) {
 }
 
 func Delete_RestApiRecord(w http.ResponseWriter, r *http.Request) {
+	if w == nil || r == nil {
+		return
+	}
+
 	var id = GetId(r)
+	fmt.Printf("Id: %v\n", id)
+	Delete_RestApiRecord_Impl(id, w)
+}
+
+func Delete_RestApiRecord_Impl(id string, w http.ResponseWriter) {
+	if w == nil {
+		return
+	}
 	var xList = GetFileOfRestApiDescriptions(locationOfFile)
 	var index = Find(xList, id)
 
@@ -123,6 +171,7 @@ func Delete_RestApiRecord(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetId(r *http.Request) string {
+	fmt.Printf("URL: %v\n", r.URL)
 	return mux.Vars(r)["id"]
 }
 
