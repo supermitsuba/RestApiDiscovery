@@ -24,7 +24,7 @@ func TestGet_Request_Ok(t *testing.T) {
 	AssertArrayMatches(expectedData, actualData, t)
 }
 
-func TestGet_NilParameters(t *testing.T) {
+func TestGet_NilParameters_ReturnTwoRecords(t *testing.T) {
 	locationOfFile = "test/two_file.json"
 	Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, nil)
 }
@@ -49,12 +49,12 @@ func TestPut_Request_Ok(t *testing.T) {
 	}
 }
 
-func TestPut_NilParameters(t *testing.T) {
+func TestPut_NilParameters_ReturnNil(t *testing.T) {
 	locationOfFile = "test/two_file.json"
 	Put_RestApiRecords_Impl(nil, nil)
 }
 
-func TestPost_NilParameters(t *testing.T) {
+func TestPost_NilParameters_ReturnNil(t *testing.T) {
 	locationOfFile = "test/two_file.json"
 	Post_RestApiRecords_Impl(nil, nil)
 }
@@ -96,7 +96,7 @@ func TestDelete_Request_Ok(t *testing.T) {
 	}
 }
 
-func TestDelete_NilParameters(t *testing.T) {
+func TestDelete_NilParameters_ReturnNil(t *testing.T) {
 	locationOfFile = "test/two_file.json"
 	Delete_RestApiRecord_Impl("", nil)
 }

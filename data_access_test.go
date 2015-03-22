@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestReadFile_NoFile(t *testing.T) {
+func TestReadFile_NoFile_NilArray(t *testing.T) {
 	var result = GetFileOfRestApiDescriptions("test/empty_file.json")
 	if result != nil {
 		t.Errorf("Should have been null.")
@@ -24,7 +24,7 @@ func TestReadFile_NoFile(t *testing.T) {
 	}
 ]
 */
-func TestReadFile_OneRecordFile(t *testing.T) {
+func TestReadFile_OneRecord_ArrayOfOne(t *testing.T) {
 	var result = GetFileOfRestApiDescriptions("test/one_file.json")
 	if result == nil {
 		t.Errorf("Should have read one record.")
@@ -65,7 +65,7 @@ func TestReadFile_OneRecordFile(t *testing.T) {
 	}
 ]
 */
-func TestReadFile_TwoRecordFile(t *testing.T) {
+func TestReadFile_TwoRecords_ArrayOf2(t *testing.T) {
 	var result = GetFileOfRestApiDescriptions("test/two_file.json")
 	if result == nil {
 		t.Errorf("Should have read one record.")
@@ -96,7 +96,7 @@ func TestReadFile_TwoRecordFile(t *testing.T) {
 	}
 }
 
-func TestWriteFile_Nil(t *testing.T) {
+func TestWriteFile_Nil_WriteNil(t *testing.T) {
 	WriteRestApiDescriptionsToFile(nil, "test/output/TestWriteFile_Nil.json")
 	var result = GetFileOfRestApiDescriptions("test/output/TestWriteFile_Nil.json")
 	if result != nil {
@@ -105,7 +105,7 @@ func TestWriteFile_Nil(t *testing.T) {
 	}
 }
 
-func TestWriteFile_EmptyFile(t *testing.T) {
+func TestWriteFile_EmptyFile_WriteNil(t *testing.T) {
 	var data = new([]RestApiDescription)
 	WriteRestApiDescriptionsToFile(*data, "test/output/TestWriteFile_EmptyFile.json")
 	var result = GetFileOfRestApiDescriptions("test/output/TestWriteFile_EmptyFile.json")
@@ -115,7 +115,7 @@ func TestWriteFile_EmptyFile(t *testing.T) {
 	}
 }
 
-func TestWriteFile_OneRecordFile(t *testing.T) {
+func TestWriteFile_ArrayOfOne_WriteOneRecord(t *testing.T) {
 	var data = []RestApiDescription{RestApiDescription{
 		"localhost:8088",
 		"This service is for discovering Apis.",
@@ -147,7 +147,7 @@ func TestWriteFile_OneRecordFile(t *testing.T) {
 	}
 }
 
-func TestWriteFile_TwoRecordFile(t *testing.T) {
+func TestWriteFile_ArrayOfTwo_WriteTwoRecord(t *testing.T) {
 	var data = []RestApiDescription{RestApiDescription{
 		"localhost:8088",
 		"This service is for discovering Apis.",
