@@ -43,7 +43,7 @@ To do some code coverage commands, use these:
 Running
 =======
 
-When running the app, it will open on port 8080.  To change this, go to main.go and you should see the listen line where 8080 is specified.  Future note, should probably be a configuration or something.
+When running the app, it will open on port 8088.  To change this, go to main.go and you should see the listen line where 8088 is specified.  Future note, should probably be a configuration or something.
 
 Example of building a bin:
 ```
