@@ -1,0 +1,164 @@
+#%RAML 0.8
+title: Rest API Discovery
+baseUri: http://localhost:8080
+mediaType: application/json
+
+/api:
+  /restapirecords:
+    get:
+      description: This is used to query on what API you are look for in the system.
+      headers:
+        Accept:
+          default: application/json
+          example: application/json
+      queryParameters:
+        location:
+          description: Used to signify where an API is Geographically.
+          example: WEST
+          type: string
+          required: false
+        environment:
+          description: Used to show what environment the API is in, like Beta, Test, Prod, etc...
+          example: PROD
+          type: string
+          required: false
+        q:
+          description: Used to query for data in Name and Description of the API
+          example: Twitter API
+          type: string
+          required: false
+        isActive:
+          description: Used to signify if an API is active or not.  If not set, we return both
+          example: true
+          type: boolean
+          required: false
+        page:
+          description: This will retrieve the page of results, considering this may contain lots of information
+          example: 0
+          default: 0
+          type: integer
+          required: false
+        totalRecords:
+          description: This will retrieve the page of results, considering this may contain lots of information
+          example: 20
+          default: 100
+          type: integer
+          required: false
+      responses:
+        200:
+          description: This is a successful query
+          body:
+            application/json:
+              example: |
+                [
+                  {
+                    "url":"localhost:8050",
+                    "description":"This service is for resting.",
+                    "name":"Resting Discovery Service",
+                    "environment":"test",
+                    "location":"EAST",
+                    "active":true,
+                    "id":"8f6f55a2-20ab-4baf-8d95-144ebbe9776b"
+                  }
+                ]
+        500:
+          description: This is a service falure
+          body:
+            application/json:
+              example: "{ 'msg': 'server sucks' }"               
+
+    post:
+      description: This is for inserting a record into the discovery service.
+      headers:
+        Accept:
+          default: application/json
+          example: application/json
+      body:
+        application/json: 
+          example: |
+            {
+              "url":"localhost:8050",
+              "description":"This service is for resting.",
+              "name":"Resting Discovery Service",
+              "environment":"test",
+              "location":"EAST",
+              "active":true
+            }
+      responses:
+        200:
+          description: This is a successful response.
+          body:
+            application/json:
+              example: |
+                "{ 'result':'OK' }"
+        500:
+          description: This is a service falure
+          body:
+            application/json:
+              example: "{ 'msg': 'server sucks' }"  
+        
+    /{id}:
+      uriParameters:
+        id:
+            example: 8f6f55a2-20ab-4baf-8d95-144ebbe9776b
+            description: This is a unique identifier of each API
+      put:
+        description: This resource is to update a record.
+        headers:
+          Accept:
+            default: application/json
+            example: application/json
+        body:
+          application/json: 
+            example: |
+              {
+                "url":"localhost:8050",
+                "description":"This service is for resting.",
+                "name":"Resting Discovery Service",
+                "environment":"test",
+                "location":"EAST",
+                "active":true
+              }
+        responses:
+          200:
+            description: This is a successful response.
+            body:
+              application/json:
+                example: |
+                  "{ 'result':'OK' }"
+          404:
+            description: The record to update is not found.
+            body:
+              application/json:
+                example: |
+                  "{ 'result':'Not OK' }"
+                
+          500:
+            description: This is a service falure
+            body:
+              application/json:
+                example: "{ 'msg': 'server sucks' }" 
+      delete:
+        description: This is used to remove API's from this service.
+        headers:
+          Accept:
+            default: application/json
+            example: application/json
+        responses:
+          200:
+            description: This is a successful response.
+            body:
+              application/json:
+                example: |
+                  "{ 'result':'OK' }"
+          404:
+            description: The record to update is not found.
+            body:
+              application/json:
+                example: |
+                  "{ 'result':'Not OK' }"
+          500:
+            description: This is a service falure
+            body:
+              application/json:
+                example: "{ 'msg': 'server sucks' }" 
