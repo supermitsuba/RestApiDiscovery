@@ -4,6 +4,6 @@ import (
 	"strings"
 )
 
-func IsStringWhiteSpaceOrEmpty(s string) bool {
-	return len(strings.TrimSpace(s)) == 0
+func IsStringWhiteSpaceOrEmpty(str string) bool {
+	return len(strings.TrimSpace(str)) == 0
 }

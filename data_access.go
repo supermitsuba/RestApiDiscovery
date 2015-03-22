@@ -8,15 +8,17 @@ import (
 
 // todo: make sure file stream is disposed
 func WriteRestApiDescriptionsToFile(list []RestApiDescription, fileName string) {
-	var str, _ = json.Marshal(list)
-	ioutil.WriteFile(fileName, []byte(str), 0777)
+	var listAsString, _ = json.Marshal(list)
+
+	ioutil.WriteFile(fileName, []byte(listAsString), 0777)
 }
 
 // todo: dispose of file stream
 func GetFileOfRestApiDescriptions(fileName string) []RestApiDescription {
-	var newList = new([]RestApiDescription)
-	var file, _ = os.Open(fileName)
-	json.NewDecoder(file).Decode(newList)
-	file.Close()
-	return *newList
+	var results = new([]RestApiDescription)
+	var fileStream, _ = os.Open(fileName)
+
+	json.NewDecoder(fileStream).Decode(results)
+	fileStream.Close()
+	return *results
 }
