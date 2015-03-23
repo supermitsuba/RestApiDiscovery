@@ -1,1 +1,0 @@
-[{"url":"localhost:8088","description":"This service is for discovering Apis.","name":"Rest Api Discovery Service","environment":"prod","location":"EAST","active":true,"id":"a9be2783-e3c7-457f-80e0-f08fee96c14e"},{"url":"localhost:8066","description":"Test derp.","name":"Test","environment":"test","location":"EAST","active":true,"id":"a9aa2783-e3c7-447f-80e0-f08fee96c14e"}]
