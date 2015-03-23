@@ -23,7 +23,7 @@ Basically, you should expect to POST and PUT using this structure.  Also, if you
 
 API Description
 ===============
-For a more detailed idea of what this API does, there is a raml file included in the code base.  You can use : http://ramlexample.cloudapp.net/ to paste the raml file (/RestApiDiscovery.raml) into it and see the API visually.
+For a more detailed idea of what this API does, there is a raml file included in the code base.  You can use : http://ramlexample.cloudapp.net/ to paste the raml file (/documentation/RestApiDiscovery.raml) into it and see the API visually.
 
 Testing
 =======
@@ -52,4 +52,4 @@ Example of building a bin:
 
 Dependencies
 ============
-If you are wondering what Dependencies there are, there is good news, I have a dockerfile to help with that.  While I am still playing with docker, I have not made an official image yet, but this docker file will allow you to isolate what Dependencies you will need.  Look for the file in this directory: /Dockerfile
+If you are wondering what Dependencies there are, there is good news, I have a dockerfile to help with that.  While I am still playing with docker, I have not made an official image yet, but this docker file will allow you to isolate what Dependencies you will need.  Look for the file in this directory: /documentation/Dockerfile
