@@ -1,7 +1,7 @@
 package data
 
 import (
-	"restapidiscovery/model"
+	"RestApiDiscovery/model"
 	"testing"
 )
 

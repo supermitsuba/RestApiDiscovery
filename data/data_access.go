@@ -1,10 +1,10 @@
 package data
 
 import (
+	"RestApiDiscovery/model"
 	"encoding/json"
 	"io/ioutil"
 	"os"
-	"restapidiscovery/model"
 )
 
 // todo: make sure file stream is disposed

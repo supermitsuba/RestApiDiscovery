@@ -1,13 +1,13 @@
 package controller
 
 import (
+	"RestApiDiscovery/data"
+	"RestApiDiscovery/helpers"
+	"RestApiDiscovery/model"
 	"code.google.com/p/go-uuid/uuid"
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"restapidiscovery/data"
-	"restapidiscovery/helpers"
-	"restapidiscovery/model"
 	"strconv"
 	"strings"
 )

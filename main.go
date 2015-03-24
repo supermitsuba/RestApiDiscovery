@@ -1,9 +1,9 @@
 package main
 
 import (
+	"RestApiDiscovery/controller"
 	"log"
 	"net/http"
-	"restapidiscovery/controller"
 )
 
 func main() {

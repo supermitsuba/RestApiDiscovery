@@ -2,10 +2,10 @@
 package controller
 
 import (
+	"RestApiDiscovery/data"
+	"RestApiDiscovery/model"
 	"encoding/json"
 	"net/http/httptest"
-	"restapidiscovery/data"
-	"restapidiscovery/model"
 	"strings"
 	"testing"
 )

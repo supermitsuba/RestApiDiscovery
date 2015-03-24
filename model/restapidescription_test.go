@@ -1,8 +1,8 @@
 package model
 
 import (
-	"restapidiscovery/data"
-	"restapidiscovery/model"
+	"RestApiDiscovery/data"
+	"RestApiDiscovery/model"
 	"testing"
 )
 
