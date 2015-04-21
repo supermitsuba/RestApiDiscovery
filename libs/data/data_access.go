@@ -1,7 +1,7 @@
 package data
 
 import (
-	"RestApiDiscovery/model"
+	"RestApiDiscovery/libs/model"
 	"encoding/json"
 	"io/ioutil"
 	"os"

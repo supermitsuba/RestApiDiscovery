@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"RestApiDiscovery/data"
-	"RestApiDiscovery/helpers"
-	"RestApiDiscovery/model"
+	"RestApiDiscovery/libs/data"
+	"RestApiDiscovery/libs/helpers"
+	"RestApiDiscovery/libs/model"
 	"code.google.com/p/go-uuid/uuid"
 	"encoding/json"
 	"github.com/gorilla/mux"

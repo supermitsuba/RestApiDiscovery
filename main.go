@@ -1,7 +1,7 @@
 package main
 
 import (
-	"RestApiDiscovery/controller"
+	"RestApiDiscovery/libs/controller"
 	"log"
 	"net/http"
 )
