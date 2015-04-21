@@ -2,8 +2,8 @@
 package controller
 
 import (
-	"RestApiDiscovery/data"
-	"RestApiDiscovery/model"
+	"RestApiDiscovery/libs/data"
+	"RestApiDiscovery/libs/model"
 	"encoding/json"
 	"net/http/httptest"
 	"strings"
@@ -11,7 +11,7 @@ import (
 )
 
 func TestGet_Request_Ok(t *testing.T) {
-	locationOfFile = "../documentation/testdata/two_file.json"
+	locationOfFile = "../../documentation/testdata/two_file.json"
 	var expectedData = data.GetFileOfRestApiDescriptions(locationOfFile)
 	var response = httptest.NewRecorder()
 
@@ -32,8 +32,8 @@ func TestGet_NilParameters_ReturnTwoRecords(t *testing.T) {
 }
 
 func TestPut_Request_Ok(t *testing.T) {
-	locationOfFile = "../documentation/testdata/output/two_file_put.json"
-	var items = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
+	locationOfFile = "../../documentation/testdata/output/two_file_put.json"
+	var items = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
 	data.WriteRestApiDescriptionsToFile(items, locationOfFile)
 	var updateRecordString = "{\"url\":\"localhost:8088\",\"description\":\"This service is for discovering Apis.\",\"name\":\"Rest Api Discovery Service\",\"environment\":\"prod\",\"location\":\"EAST\",\"active\":true,\"id\":\"a9be2783-e3c7-457f-80e0-f08fee96c14e\"}"
 	var updateRecord = new(model.RestApiDescription)
@@ -53,18 +53,18 @@ func TestPut_Request_Ok(t *testing.T) {
 }
 
 func TestPut_NilParameters_ReturnNil(t *testing.T) {
-	locationOfFile = "../documentation/testdata/two_file.json"
+	locationOfFile = "../../documentation/testdata/two_file.json"
 	Put_RestApiRecords_Impl(nil, nil)
 }
 
 func TestPost_NilParameters_ReturnNil(t *testing.T) {
-	locationOfFile = "../documentation/testdata/two_file.json"
+	locationOfFile = "../../documentation/testdata/two_file.json"
 	Post_RestApiRecords_Impl(nil, nil)
 }
 
 func TestPost_Request_Ok(t *testing.T) {
-	locationOfFile = "../documentation/testdata/output/two_file_post.json"
-	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json"), locationOfFile)
+	locationOfFile = "../../documentation/testdata/output/two_file_post.json"
+	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json"), locationOfFile)
 	var updateRecordString = "{\"url\":\"localhost:8088\",\"description\":\"This service is for discovering Apis.\",\"name\":\"Rest Api Discovery Service\",\"environment\":\"prod\",\"location\":\"EAST\",\"active\":true,\"id\":\"a9be2783-e3c7-457f-80e0-f08fee96c14e\"}"
 	var updateRecord = new(model.RestApiDescription)
 	var response = httptest.NewRecorder()
@@ -83,8 +83,8 @@ func TestPost_Request_Ok(t *testing.T) {
 }
 
 func TestDelete_Request_Ok(t *testing.T) {
-	locationOfFile = "../documentation/testdata/output/two_file_delete.json"
-	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json"), locationOfFile)
+	locationOfFile = "../../documentation/testdata/output/two_file_delete.json"
+	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json"), locationOfFile)
 
 	var response = httptest.NewRecorder()
 
@@ -100,7 +100,7 @@ func TestDelete_Request_Ok(t *testing.T) {
 }
 
 func TestDelete_NilParameters_ReturnNil(t *testing.T) {
-	locationOfFile = "../documentation/testdata/two_file.json"
+	locationOfFile = "../../documentation/testdata/two_file.json"
 	Delete_RestApiRecord_Impl("", nil)
 }
 

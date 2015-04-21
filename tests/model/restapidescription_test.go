@@ -1,13 +1,13 @@
 package model
 
 import (
-	"RestApiDiscovery/data"
-	"RestApiDiscovery/model"
+	"RestApiDiscovery/libs/data"
+	"RestApiDiscovery/libs/model"
 	"testing"
 )
 
 func TestReplace_MultipleRecord_ReplaceFirstIndex(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/three_file.json")
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/three_file.json")
 	var item = model.RestApiDescription{
 		"localhost:8066",
 		"Test derp.",
@@ -17,7 +17,7 @@ func TestReplace_MultipleRecord_ReplaceFirstIndex(t *testing.T) {
 		true,
 		"a9aa2783-e3c7-447f-80e0-f08fee96c14e",
 	}
-	var result = model.Replace(data, item)
+	var result = model.Replace(d, item)
 
 	if result == nil {
 		t.Errorf("Should be an array.  %v", result)
@@ -29,7 +29,7 @@ func TestReplace_MultipleRecord_ReplaceFirstIndex(t *testing.T) {
 }
 
 func TestReplace_OneRecord_ArrayOfTwo(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
 	var item = model.RestApiDescription{
 		"localhost:8066",
 		"Test derp.",
@@ -39,7 +39,7 @@ func TestReplace_OneRecord_ArrayOfTwo(t *testing.T) {
 		true,
 		"a9be2783-e3c7-457f-80e0-f08fee96c14e",
 	}
-	var result = model.Replace(data, item)
+	var result = model.Replace(d, item)
 
 	if result == nil {
 		t.Errorf("Should be an array.  %v", result)
@@ -66,7 +66,7 @@ func TestReplace_OneRecord_ArrayOfTwo(t *testing.T) {
 }
 
 func TestReplace_NoRecord_ReturnUnModified(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
 	var item = model.RestApiDescription{
 		"localhost:8066",
 		"Test derp.",
@@ -76,7 +76,7 @@ func TestReplace_NoRecord_ReturnUnModified(t *testing.T) {
 		true,
 		"z",
 	}
-	var result = model.Replace(data, item)
+	var result = model.Replace(d, item)
 
 	if result == nil {
 		t.Errorf("Should be an array.  %v", result)
@@ -92,7 +92,7 @@ func TestReplace_NoRecord_ReturnUnModified(t *testing.T) {
 }
 
 func TestReplace_NilParameters_ReturnEmptyArray(t *testing.T) {
-	var item = RestApiDescription{
+	var item = model.RestApiDescription{
 		"localhost:8066",
 		"Test derp.",
 		"Test",
@@ -101,7 +101,7 @@ func TestReplace_NilParameters_ReturnEmptyArray(t *testing.T) {
 		true,
 		"a9aa2783-e3c7-447f-80e0-f08fee96c14e",
 	}
-	var result = Replace(nil, item)
+	var result = model.Replace(nil, item)
 
 	if result != nil {
 		t.Errorf("Should be an array.  %v", result)
@@ -113,8 +113,8 @@ func TestReplace_NilParameters_ReturnEmptyArray(t *testing.T) {
 }
 
 func TesRemove_OneRecord_ReturnListWithFirstRemoved(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Remove(data, 0)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Remove(d, 0)
 
 	if result == nil {
 		t.Errorf("Should be the list with first index removed.  %v", result)
@@ -122,8 +122,8 @@ func TesRemove_OneRecord_ReturnListWithFirstRemoved(t *testing.T) {
 }
 
 func TestRemove_NoRecord_RemoveNothing(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Remove(data, -1)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Remove(d, -1)
 
 	if result == nil {
 		t.Errorf("Should be the same list.  %v", result)
@@ -143,8 +143,8 @@ func TestRemove_NilParameters_ReturnEmptyList(t *testing.T) {
 }
 
 func TestFind_FindMultipleRecord_ReturnFirstIndex(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Find(data, "a9be2783-e3c7-457f-80e0-f08fee96c14e")
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Find(d, "a9be2783-e3c7-457f-80e0-f08fee96c14e")
 
 	if result != 0 {
 		t.Errorf("Should be 0 index.  %v", result)
@@ -152,8 +152,8 @@ func TestFind_FindMultipleRecord_ReturnFirstIndex(t *testing.T) {
 }
 
 func TestFind_OneRecord_IndexZero(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Find(data, "a9be2783-e3c7-457f-80e0-f08fee96c14e")
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Find(d, "a9be2783-e3c7-457f-80e0-f08fee96c14e")
 
 	if result != 0 {
 		t.Errorf("Should be 0 index.  %v", result)
@@ -161,8 +161,8 @@ func TestFind_OneRecord_IndexZero(t *testing.T) {
 }
 
 func TestFind_NoRecord_NegativeOne(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Find(data, "")
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Find(d, "")
 
 	if result != -1 {
 		t.Errorf("Should be -1.  %v", result)
@@ -178,8 +178,8 @@ func TestFind_NilParameters_NegativeOne(t *testing.T) {
 }
 
 func TestTake_TakeTooMany_ReturnAll(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Take(data, 3)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Take(d, 3)
 
 	if result == nil {
 		t.Errorf("Should be an array.  %v", result)
@@ -191,8 +191,8 @@ func TestTake_TakeTooMany_ReturnAll(t *testing.T) {
 }
 
 func TestTake_OneTake_ReturnOne(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Take(data, 1)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Take(d, 1)
 
 	if result == nil {
 		t.Errorf("Should be empty array.  %v", result)
@@ -237,8 +237,8 @@ func TestSkip_NilParameters_ReturnEmptyArray(t *testing.T) {
 }
 
 func TestSkip_NegativeSkip_EmptyArray(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Skip(data, -1)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Skip(d, -1)
 
 	if result == nil {
 		t.Errorf("Should be empty array.  %v", result)
@@ -250,8 +250,8 @@ func TestSkip_NegativeSkip_EmptyArray(t *testing.T) {
 }
 
 func TestSkip_ZeroSkip_ReturnArray(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Skip(data, 0)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Skip(d, 0)
 
 	if result == nil {
 		t.Errorf("Should be empty array.  %v", result)
@@ -263,8 +263,8 @@ func TestSkip_ZeroSkip_ReturnArray(t *testing.T) {
 }
 
 func TestSkip_OneSkip_ReturnArrayOfOne(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Skip(data, 1)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Skip(d, 1)
 
 	if result == nil {
 		t.Errorf("Should be empty array.  %v", result)
@@ -276,8 +276,8 @@ func TestSkip_OneSkip_ReturnArrayOfOne(t *testing.T) {
 }
 
 func TestSkip_SkipTooMany_ReturnEmptyArray(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Skip(data, 5)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Skip(d, 5)
 
 	if result == nil {
 		t.Errorf("Should be empty array.  %v", result)
@@ -296,8 +296,8 @@ func TestWhere_NilParameters_ReturnNil(t *testing.T) {
 }
 
 func TestWhere_NilFunc_ReturnArray(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Where(data, nil)
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Where(d, nil)
 	if result == nil {
 		t.Errorf("Should be the array.  %v", result)
 	}
@@ -306,14 +306,14 @@ func TestWhere_NilFunc_ReturnArray(t *testing.T) {
 		t.Errorf("Should be the array.  %v", result)
 	}
 
-	if result[0].Id != data[0].Id &&
-		result[0].Description != data[0].Description &&
-		result[0].Environment != data[0].Environment &&
-		result[0].IsActive != data[0].IsActive &&
-		result[0].Location != data[0].Location &&
-		result[0].Name != data[0].Name &&
-		result[0].Url != data[0].Url {
-		t.Errorf("Should have the same record. Expected: %v, Actual: %v", data, result)
+	if result[0].Id != d[0].Id &&
+		result[0].Description != d[0].Description &&
+		result[0].Environment != d[0].Environment &&
+		result[0].IsActive != d[0].IsActive &&
+		result[0].Location != d[0].Location &&
+		result[0].Name != d[0].Name &&
+		result[0].Url != d[0].Url {
+		t.Errorf("Should have the same record. Expected: %v, Actual: %v", d, result)
 	}
 }
 
@@ -329,8 +329,8 @@ func TestWhere_NilData_ReturnEmptyArray(t *testing.T) {
 }
 
 func TestWhere_SearchFunc_ReturnArrayOfOne(t *testing.T) {
-	var data = data.GetFileOfRestApiDescriptions("../documentation/testdata/two_file.json")
-	var result = model.Where(data, func(item model.RestApiDescription) bool { return item.Url == "localhost:8088" })
+	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var result = model.Where(d, func(item model.RestApiDescription) bool { return item.Url == "localhost:8088" })
 
 	if result == nil {
 		t.Errorf("Should be the array.  %v", result)
@@ -340,13 +340,13 @@ func TestWhere_SearchFunc_ReturnArrayOfOne(t *testing.T) {
 		t.Errorf("Should be the array.  %v", result)
 	}
 
-	if result[0].Id != data[0].Id &&
-		result[0].Description != data[0].Description &&
-		result[0].Environment != data[0].Environment &&
-		result[0].IsActive != data[0].IsActive &&
-		result[0].Location != data[0].Location &&
-		result[0].Name != data[0].Name &&
-		result[0].Url != data[0].Url {
-		t.Errorf("Should have the same record. Expected: %v, Actual: %v", data, result)
+	if result[0].Id != d[0].Id &&
+		result[0].Description != d[0].Description &&
+		result[0].Environment != d[0].Environment &&
+		result[0].IsActive != d[0].IsActive &&
+		result[0].Location != d[0].Location &&
+		result[0].Name != d[0].Name &&
+		result[0].Url != d[0].Url {
+		t.Errorf("Should have the same record. Expected: %v, Actual: %v", d, result)
 	}
 }
