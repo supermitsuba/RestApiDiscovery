@@ -16,6 +16,10 @@ var locationOfFile = "data/apis.json"
 var OkResponse = "{ 'result':'OK' }"
 var NotFoundResponse = "{ 'result':'Not OK' }"
 
+func SetLocationOfFile(location string) {
+	locationOfFile = location
+}
+
 func Get_RestApiRecords(response http.ResponseWriter, request *http.Request) {
 	if response == nil || request == nil {
 		return

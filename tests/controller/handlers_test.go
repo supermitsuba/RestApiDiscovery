@@ -2,6 +2,7 @@
 package controller
 
 import (
+	"RestApiDiscovery/libs/controller"
 	"RestApiDiscovery/libs/data"
 	"RestApiDiscovery/libs/model"
 	"encoding/json"
@@ -11,11 +12,13 @@ import (
 )
 
 func TestGet_Request_Ok(t *testing.T) {
-	locationOfFile = "../../documentation/testdata/two_file.json"
-	var expectedData = data.GetFileOfRestApiDescriptions(locationOfFile)
+	var location = "../../documentation/testdata/two_file.json"
+	controller.SetLocationOfFile(location)
+
+	var expectedData = data.GetFileOfRestApiDescriptions(location)
 	var response = httptest.NewRecorder()
 
-	Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, response)
+	controller.Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, response)
 
 	if response.Code != 200 {
 		t.Errorf("Should have 200 status code.")
@@ -27,21 +30,23 @@ func TestGet_Request_Ok(t *testing.T) {
 }
 
 func TestGet_NilParameters_ReturnTwoRecords(t *testing.T) {
-	locationOfFile = "test/two_file.json"
-	Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, nil)
+	var location = "test/two_file.json"
+	controller.SetLocationOfFile(location)
+	controller.Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, nil)
 }
 
 func TestPut_Request_Ok(t *testing.T) {
-	locationOfFile = "../../documentation/testdata/output/two_file_put.json"
+	var location = "../../documentation/testdata/output/two_file_put.json"
+	controller.SetLocationOfFile(location)
 	var items = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
-	data.WriteRestApiDescriptionsToFile(items, locationOfFile)
+	data.WriteRestApiDescriptionsToFile(items, location)
 	var updateRecordString = "{\"url\":\"localhost:8088\",\"description\":\"This service is for discovering Apis.\",\"name\":\"Rest Api Discovery Service\",\"environment\":\"prod\",\"location\":\"EAST\",\"active\":true,\"id\":\"a9be2783-e3c7-457f-80e0-f08fee96c14e\"}"
 	var updateRecord = new(model.RestApiDescription)
 	var response = httptest.NewRecorder()
 
 	json.Unmarshal([]byte(updateRecordString), updateRecord)
 
-	Put_RestApiRecords_Impl(updateRecord, response)
+	controller.Put_RestApiRecords_Impl(updateRecord, response)
 
 	if response.Code != 200 {
 		t.Errorf("Should have 200 status code. Status Code: %v", response.Code)
@@ -53,25 +58,28 @@ func TestPut_Request_Ok(t *testing.T) {
 }
 
 func TestPut_NilParameters_ReturnNil(t *testing.T) {
-	locationOfFile = "../../documentation/testdata/two_file.json"
-	Put_RestApiRecords_Impl(nil, nil)
+	var location = "../../documentation/testdata/two_file.json"
+	controller.SetLocationOfFile(location)
+	controller.Put_RestApiRecords_Impl(nil, nil)
 }
 
 func TestPost_NilParameters_ReturnNil(t *testing.T) {
-	locationOfFile = "../../documentation/testdata/two_file.json"
-	Post_RestApiRecords_Impl(nil, nil)
+	var location = "../../documentation/testdata/two_file.json"
+	controller.SetLocationOfFile(location)
+	controller.Post_RestApiRecords_Impl(nil, nil)
 }
 
 func TestPost_Request_Ok(t *testing.T) {
-	locationOfFile = "../../documentation/testdata/output/two_file_post.json"
-	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json"), locationOfFile)
+	var location = "../../documentation/testdata/output/two_file_post.json"
+	controller.SetLocationOfFile(location)
+	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json"), location)
 	var updateRecordString = "{\"url\":\"localhost:8088\",\"description\":\"This service is for discovering Apis.\",\"name\":\"Rest Api Discovery Service\",\"environment\":\"prod\",\"location\":\"EAST\",\"active\":true,\"id\":\"a9be2783-e3c7-457f-80e0-f08fee96c14e\"}"
 	var updateRecord = new(model.RestApiDescription)
 	var response = httptest.NewRecorder()
 
 	json.Unmarshal([]byte(updateRecordString), updateRecord)
 
-	Post_RestApiRecords_Impl(updateRecord, response)
+	controller.Post_RestApiRecords_Impl(updateRecord, response)
 
 	if response.Code != 200 {
 		t.Errorf("Should have 200 status code. Status Code: %v", response.Code)
@@ -83,12 +91,13 @@ func TestPost_Request_Ok(t *testing.T) {
 }
 
 func TestDelete_Request_Ok(t *testing.T) {
-	locationOfFile = "../../documentation/testdata/output/two_file_delete.json"
-	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json"), locationOfFile)
+	var location = "../../documentation/testdata/output/two_file_delete.json"
+	controller.SetLocationOfFile(location)
+	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json"), location)
 
 	var response = httptest.NewRecorder()
 
-	Delete_RestApiRecord_Impl("a9be2783-e3c7-457f-80e0-f08fee96c14e", response)
+	controller.Delete_RestApiRecord_Impl("a9be2783-e3c7-457f-80e0-f08fee96c14e", response)
 
 	if response.Code != 200 {
 		t.Errorf("Should have 200 status code. Status Code: %v", response.Code)
@@ -100,8 +109,9 @@ func TestDelete_Request_Ok(t *testing.T) {
 }
 
 func TestDelete_NilParameters_ReturnNil(t *testing.T) {
-	locationOfFile = "../../documentation/testdata/two_file.json"
-	Delete_RestApiRecord_Impl("", nil)
+	var location = "../../documentation/testdata/two_file.json"
+	controller.SetLocationOfFile(location)
+	controller.Delete_RestApiRecord_Impl("", nil)
 }
 
 /*
