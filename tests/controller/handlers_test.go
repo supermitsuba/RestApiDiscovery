@@ -1,9 +1,12 @@
 // handlers_test
 package controller
 
+//TODO: make sure to mock file system
 import (
 	"RestApiDiscovery/libs/controller"
-	"RestApiDiscovery/libs/data"
+	data "RestApiDiscovery/libs/data"
+	interfaces "RestApiDiscovery/libs/data/interfaces"
+	"RestApiDiscovery/libs/helpers"
 	"RestApiDiscovery/libs/model"
 	"encoding/json"
 	"net/http/httptest"
@@ -13,12 +16,13 @@ import (
 
 func TestGet_Request_Ok(t *testing.T) {
 	var location = "../../documentation/testdata/two_file.json"
-	controller.SetLocationOfFile(location)
+	var handler = controller.Init(interfaces.Data_access(data.File_access{FileLocation: location}))
+	var dataLayer = data.File_access{FileLocation: location}
+	var expectedData = helpers.ConvertToThing(dataLayer.Load(""))
 
-	var expectedData = data.GetFileOfRestApiDescriptions(location)
 	var response = httptest.NewRecorder()
 
-	controller.Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, response)
+	handler.Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, response)
 
 	if response.Code != 200 {
 		t.Errorf("Should have 200 status code.")
@@ -31,22 +35,27 @@ func TestGet_Request_Ok(t *testing.T) {
 
 func TestGet_NilParameters_ReturnTwoRecords(t *testing.T) {
 	var location = "test/two_file.json"
-	controller.SetLocationOfFile(location)
-	controller.Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, nil)
+	var handler = controller.Init(interfaces.Data_access(data.File_access{FileLocation: location}))
+
+	handler.Get_RestApiRecords_Impl(nil, nil, nil, nil, nil, nil, nil)
 }
 
 func TestPut_Request_Ok(t *testing.T) {
 	var location = "../../documentation/testdata/output/two_file_put.json"
-	controller.SetLocationOfFile(location)
-	var items = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
-	data.WriteRestApiDescriptionsToFile(items, location)
+	var handler = controller.Init(interfaces.Data_access(data.File_access{FileLocation: location}))
+
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var items = helpers.ConvertToThing(dataLayer.Load(""))
+	var file_access = data.File_access{FileLocation: location}
+	var myData, _ = json.Marshal(items)
+	file_access.Save("", string(myData))
 	var updateRecordString = "{\"url\":\"localhost:8088\",\"description\":\"This service is for discovering Apis.\",\"name\":\"Rest Api Discovery Service\",\"environment\":\"prod\",\"location\":\"EAST\",\"active\":true,\"id\":\"a9be2783-e3c7-457f-80e0-f08fee96c14e\"}"
 	var updateRecord = new(model.RestApiDescription)
 	var response = httptest.NewRecorder()
 
 	json.Unmarshal([]byte(updateRecordString), updateRecord)
 
-	controller.Put_RestApiRecords_Impl(updateRecord, response)
+	handler.Put_RestApiRecords_Impl(updateRecord, response)
 
 	if response.Code != 200 {
 		t.Errorf("Should have 200 status code. Status Code: %v", response.Code)
@@ -59,27 +68,31 @@ func TestPut_Request_Ok(t *testing.T) {
 
 func TestPut_NilParameters_ReturnNil(t *testing.T) {
 	var location = "../../documentation/testdata/two_file.json"
-	controller.SetLocationOfFile(location)
-	controller.Put_RestApiRecords_Impl(nil, nil)
+	var handler = controller.Init(interfaces.Data_access(data.File_access{FileLocation: location}))
+
+	handler.Put_RestApiRecords_Impl(nil, nil)
 }
 
 func TestPost_NilParameters_ReturnNil(t *testing.T) {
 	var location = "../../documentation/testdata/two_file.json"
-	controller.SetLocationOfFile(location)
-	controller.Post_RestApiRecords_Impl(nil, nil)
+	var handler = controller.Init(interfaces.Data_access(data.File_access{FileLocation: location}))
+
+	handler.Post_RestApiRecords_Impl(nil, nil)
 }
 
 func TestPost_Request_Ok(t *testing.T) {
 	var location = "../../documentation/testdata/output/two_file_post.json"
-	controller.SetLocationOfFile(location)
-	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json"), location)
+	var file_access = data.File_access{FileLocation: location}
+	var handler = controller.Init(interfaces.Data_access(file_access))
+
+	file_access.Save("", file_access.Load(""))
 	var updateRecordString = "{\"url\":\"localhost:8088\",\"description\":\"This service is for discovering Apis.\",\"name\":\"Rest Api Discovery Service\",\"environment\":\"prod\",\"location\":\"EAST\",\"active\":true,\"id\":\"a9be2783-e3c7-457f-80e0-f08fee96c14e\"}"
 	var updateRecord = new(model.RestApiDescription)
 	var response = httptest.NewRecorder()
 
 	json.Unmarshal([]byte(updateRecordString), updateRecord)
 
-	controller.Post_RestApiRecords_Impl(updateRecord, response)
+	handler.Post_RestApiRecords_Impl(updateRecord, response)
 
 	if response.Code != 200 {
 		t.Errorf("Should have 200 status code. Status Code: %v", response.Code)
@@ -92,12 +105,15 @@ func TestPost_Request_Ok(t *testing.T) {
 
 func TestDelete_Request_Ok(t *testing.T) {
 	var location = "../../documentation/testdata/output/two_file_delete.json"
-	controller.SetLocationOfFile(location)
-	data.WriteRestApiDescriptionsToFile(data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json"), location)
+	var oldLocation = "../../documentation/testdata/two_file.json"
+	var file_access = data.File_access{FileLocation: oldLocation}
+	var file_access_new = data.File_access{FileLocation: location}
+	var handler = controller.Init(interfaces.Data_access(file_access_new))
+	file_access_new.Save("", file_access.Load(""))
 
 	var response = httptest.NewRecorder()
 
-	controller.Delete_RestApiRecord_Impl("a9be2783-e3c7-457f-80e0-f08fee96c14e", response)
+	handler.Delete_RestApiRecord_Impl("a9be2783-e3c7-457f-80e0-f08fee96c14e", response)
 
 	if response.Code != 200 {
 		t.Errorf("Should have 200 status code. Status Code: %v", response.Code)
@@ -110,8 +126,9 @@ func TestDelete_Request_Ok(t *testing.T) {
 
 func TestDelete_NilParameters_ReturnNil(t *testing.T) {
 	var location = "../../documentation/testdata/two_file.json"
-	controller.SetLocationOfFile(location)
-	controller.Delete_RestApiRecord_Impl("", nil)
+	var handler = controller.Init(interfaces.Data_access(data.File_access{FileLocation: location}))
+
+	handler.Delete_RestApiRecord_Impl("", nil)
 }
 
 /*

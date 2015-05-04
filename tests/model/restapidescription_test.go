@@ -2,12 +2,14 @@ package model
 
 import (
 	"RestApiDiscovery/libs/data"
+	"RestApiDiscovery/libs/helpers"
 	"RestApiDiscovery/libs/model"
 	"testing"
 )
 
 func TestReplace_MultipleRecord_ReplaceFirstIndex(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/three_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/three_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
 	var item = model.RestApiDescription{
 		"localhost:8066",
 		"Test derp.",
@@ -29,7 +31,9 @@ func TestReplace_MultipleRecord_ReplaceFirstIndex(t *testing.T) {
 }
 
 func TestReplace_OneRecord_ArrayOfTwo(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var item = model.RestApiDescription{
 		"localhost:8066",
 		"Test derp.",
@@ -66,7 +70,9 @@ func TestReplace_OneRecord_ArrayOfTwo(t *testing.T) {
 }
 
 func TestReplace_NoRecord_ReturnUnModified(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var item = model.RestApiDescription{
 		"localhost:8066",
 		"Test derp.",
@@ -113,7 +119,9 @@ func TestReplace_NilParameters_ReturnEmptyArray(t *testing.T) {
 }
 
 func TesRemove_OneRecord_ReturnListWithFirstRemoved(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Remove(d, 0)
 
 	if result == nil {
@@ -122,7 +130,9 @@ func TesRemove_OneRecord_ReturnListWithFirstRemoved(t *testing.T) {
 }
 
 func TestRemove_NoRecord_RemoveNothing(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Remove(d, -1)
 
 	if result == nil {
@@ -143,7 +153,9 @@ func TestRemove_NilParameters_ReturnEmptyList(t *testing.T) {
 }
 
 func TestFind_FindMultipleRecord_ReturnFirstIndex(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Find(d, "a9be2783-e3c7-457f-80e0-f08fee96c14e")
 
 	if result != 0 {
@@ -152,7 +164,9 @@ func TestFind_FindMultipleRecord_ReturnFirstIndex(t *testing.T) {
 }
 
 func TestFind_OneRecord_IndexZero(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Find(d, "a9be2783-e3c7-457f-80e0-f08fee96c14e")
 
 	if result != 0 {
@@ -161,7 +175,9 @@ func TestFind_OneRecord_IndexZero(t *testing.T) {
 }
 
 func TestFind_NoRecord_NegativeOne(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Find(d, "")
 
 	if result != -1 {
@@ -178,7 +194,9 @@ func TestFind_NilParameters_NegativeOne(t *testing.T) {
 }
 
 func TestTake_TakeTooMany_ReturnAll(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Take(d, 3)
 
 	if result == nil {
@@ -191,7 +209,9 @@ func TestTake_TakeTooMany_ReturnAll(t *testing.T) {
 }
 
 func TestTake_OneTake_ReturnOne(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Take(d, 1)
 
 	if result == nil {
@@ -237,7 +257,9 @@ func TestSkip_NilParameters_ReturnEmptyArray(t *testing.T) {
 }
 
 func TestSkip_NegativeSkip_EmptyArray(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Skip(d, -1)
 
 	if result == nil {
@@ -250,7 +272,9 @@ func TestSkip_NegativeSkip_EmptyArray(t *testing.T) {
 }
 
 func TestSkip_ZeroSkip_ReturnArray(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Skip(d, 0)
 
 	if result == nil {
@@ -263,7 +287,9 @@ func TestSkip_ZeroSkip_ReturnArray(t *testing.T) {
 }
 
 func TestSkip_OneSkip_ReturnArrayOfOne(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Skip(d, 1)
 
 	if result == nil {
@@ -276,7 +302,9 @@ func TestSkip_OneSkip_ReturnArrayOfOne(t *testing.T) {
 }
 
 func TestSkip_SkipTooMany_ReturnEmptyArray(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Skip(d, 5)
 
 	if result == nil {
@@ -296,7 +324,9 @@ func TestWhere_NilParameters_ReturnNil(t *testing.T) {
 }
 
 func TestWhere_NilFunc_ReturnArray(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Where(d, nil)
 	if result == nil {
 		t.Errorf("Should be the array.  %v", result)
@@ -329,7 +359,9 @@ func TestWhere_NilData_ReturnEmptyArray(t *testing.T) {
 }
 
 func TestWhere_SearchFunc_ReturnArrayOfOne(t *testing.T) {
-	var d = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var d = helpers.ConvertToThing(dataLayer.Load(""))
+
 	var result = model.Where(d, func(item model.RestApiDescription) bool { return item.Url == "localhost:8088" })
 
 	if result == nil {

@@ -6,8 +6,6 @@ import (
 	"RestApiDiscovery/libs/model"
 	"code.google.com/p/go-uuid/uuid"
 	"encoding/json"
-	"fmt"
-	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 	"strings"
@@ -55,8 +53,7 @@ func (h Handlers) Get_RestApiRecords_Impl(location []string,
 		return
 	}
 
-	fmt.Printf("Here is : %b\n", h.DataAccess == nil)
-	var restApis = h.ConvertToThing(h.DataAccess.Load("")) //  data.GetFileOfRestApiDescriptions(h.locationOfFile)
+	var restApis = helpers.ConvertToThing(h.DataAccess.Load("")) //  data.GetFileOfRestApiDescriptions(h.locationOfFile)
 	var totalRecordsNumber = 100
 	var pageNumber = 0
 
@@ -115,7 +112,7 @@ func (h Handlers) Post_RestApiRecords_Impl(item *model.RestApiDescription, respo
 		return
 	}
 
-	var listOfApis = h.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
+	var listOfApis = helpers.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
 	item.Id = uuid.New()
 	listOfApis = append(listOfApis, *item)
 	var data, _ = json.Marshal(listOfApis)
@@ -131,7 +128,7 @@ func (h Handlers) Put_RestApiRecords(response http.ResponseWriter, request *http
 
 	var item = new(model.RestApiDescription)
 	json.NewDecoder(request.Body).Decode(item)
-	item.Id = GetId(request)
+	item.Id = helpers.GetId(request)
 	h.Put_RestApiRecords_Impl(item, response)
 }
 
@@ -140,7 +137,7 @@ func (h Handlers) Put_RestApiRecords_Impl(item *model.RestApiDescription, respon
 		return
 	}
 
-	var listOfApis = h.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
+	var listOfApis = helpers.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
 	var index = model.Find(listOfApis, item.Id)
 
 	if index == -1 {
@@ -159,7 +156,7 @@ func (h Handlers) Delete_RestApiRecord(response http.ResponseWriter, request *ht
 		return
 	}
 
-	var id = GetId(request)
+	var id = helpers.GetId(request)
 	h.Delete_RestApiRecord_Impl(id, response)
 }
 
@@ -167,7 +164,7 @@ func (h Handlers) Delete_RestApiRecord_Impl(id string, response http.ResponseWri
 	if response == nil {
 		return
 	}
-	var listOfApis = h.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
+	var listOfApis = helpers.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
 	var index = model.Find(listOfApis, id)
 
 	if index == -1 {
@@ -180,14 +177,4 @@ func (h Handlers) Delete_RestApiRecord_Impl(id string, response http.ResponseWri
 		//data.WriteRestApiDescriptionsToFile(listOfApis, locationOfFile)
 		json.NewEncoder(response).Encode(h.OkResponse)
 	}
-}
-
-func GetId(r *http.Request) string {
-	return mux.Vars(r)["id"]
-}
-
-func (h Handlers) ConvertToThing(value string) []model.RestApiDescription {
-	var results = new([]model.RestApiDescription)
-	json.Unmarshal([]byte(value), results)
-	return *results
 }

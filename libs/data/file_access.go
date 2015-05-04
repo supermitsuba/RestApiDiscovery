@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"io/ioutil"
 )
 
@@ -14,7 +13,6 @@ func (r File_access) Save(key string, value string) {
 }
 
 func (r File_access) Load(key string) string {
-	fmt.Printf("Location: " + r.FileLocation)
 	var value, _ = ioutil.ReadFile(r.FileLocation)
 
 	return string(value)

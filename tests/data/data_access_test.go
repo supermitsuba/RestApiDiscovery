@@ -2,12 +2,17 @@ package data_test
 
 import (
 	data "RestApiDiscovery/libs/data"
+	"RestApiDiscovery/libs/helpers"
 	model "RestApiDiscovery/libs/model"
+
+	"encoding/json"
 	"testing"
 )
 
 func TestReadFile_NoFile_NilArray(t *testing.T) {
-	var result = data.GetFileOfRestApiDescriptions("../../documentation/testdata/empty_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/empty_file.json"}
+	var result = helpers.ConvertToThing(dataLayer.Load(""))
+
 	if result != nil {
 		t.Errorf("Should have been null.")
 	}
@@ -27,7 +32,9 @@ func TestReadFile_NoFile_NilArray(t *testing.T) {
 ]
 */
 func TestReadFile_OneRecord_ArrayOfOne(t *testing.T) {
-	var result = data.GetFileOfRestApiDescriptions("../../documentation/testdata/one_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/one_file.json"}
+	var result = helpers.ConvertToThing(dataLayer.Load(""))
+
 	if result == nil {
 		t.Errorf("Should have read one record.")
 	}
@@ -68,7 +75,9 @@ func TestReadFile_OneRecord_ArrayOfOne(t *testing.T) {
 ]
 */
 func TestReadFile_TwoRecords_ArrayOf2(t *testing.T) {
-	var result = data.GetFileOfRestApiDescriptions("../../documentation/testdata/two_file.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/two_file.json"}
+	var result = helpers.ConvertToThing(dataLayer.Load(""))
+
 	if result == nil {
 		t.Errorf("Should have read one record.")
 	}
@@ -98,19 +107,14 @@ func TestReadFile_TwoRecords_ArrayOf2(t *testing.T) {
 	}
 }
 
-func TestWriteFile_Nil_WriteNil(t *testing.T) {
-	data.WriteRestApiDescriptionsToFile(nil, "../../documentation/testdata/output/TestWriteFile_Nil.json")
-	var result = data.GetFileOfRestApiDescriptions("../../documentation/testdata/output/TestWriteFile_Nil.json")
-	if result != nil {
-		t.Errorf("Should have nil value.")
-
-	}
-}
-
 func TestWriteFile_EmptyFile_WriteNil(t *testing.T) {
 	var d = new([]model.RestApiDescription)
-	data.WriteRestApiDescriptionsToFile(*d, "../../documentation/testdata/output/TestWriteFile_EmptyFile.json")
-	var result = data.GetFileOfRestApiDescriptions("../../documentation/testdata/output/TestWriteFile_EmptyFile.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/output/TestWriteFile_EmptyFile.json"}
+	var myData, _ = json.Marshal(*d)
+	dataLayer.Save("", string(myData))
+
+	var result = helpers.ConvertToThing(dataLayer.Load(""))
+
 	if result != nil {
 		t.Errorf("Should have nil value.")
 
@@ -127,9 +131,13 @@ func TestWriteFile_ArrayOfOne_WriteOneRecord(t *testing.T) {
 		true,
 		"a9be2783-e3c7-457f-80e0-f08fee96c14e",
 	}}
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/output/TestWriteFile_OneRecordFile.json"}
 
-	data.WriteRestApiDescriptionsToFile(d, "../../documentation/testdata/output/TestWriteFile_OneRecordFile.json")
-	var result = data.GetFileOfRestApiDescriptions("../../documentation/testdata/output/TestWriteFile_OneRecordFile.json")
+	var myData, _ = json.Marshal(d)
+	dataLayer.Save("", string(myData))
+
+	var result = helpers.ConvertToThing(dataLayer.Load(""))
+
 	if result == nil {
 		t.Errorf("Should not be nil value.")
 	}
@@ -169,8 +177,12 @@ func TestWriteFile_ArrayOfTwo_WriteTwoRecord(t *testing.T) {
 			"a9aa2783-e3c7-447f-80e0-f08fee96c14e",
 		}}
 
-	data.WriteRestApiDescriptionsToFile(d, "../../documentation/testdata/output/TestWriteFile_OneRecordFile.json")
-	var result = data.GetFileOfRestApiDescriptions("../../documentation/testdata/output/TestWriteFile_OneRecordFile.json")
+	var dataLayer = data.File_access{FileLocation: "../../documentation/testdata/output/TestWriteFile_OneRecordFile.json"}
+	var myData, _ = json.Marshal(d)
+	dataLayer.Save("", string(myData))
+
+	var result = helpers.ConvertToThing(dataLayer.Load(""))
+
 	if result == nil {
 		t.Errorf("Should not be nil value.")
 	}
