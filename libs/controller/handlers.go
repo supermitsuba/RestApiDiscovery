@@ -1,26 +1,33 @@
 package controller
 
 import (
-	"RestApiDiscovery/libs/data"
+	interfaces "RestApiDiscovery/libs/data/interfaces"
 	"RestApiDiscovery/libs/helpers"
 	"RestApiDiscovery/libs/model"
 	"code.google.com/p/go-uuid/uuid"
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-var locationOfFile = "data/apis.json"
-var OkResponse = "{ 'result':'OK' }"
-var NotFoundResponse = "{ 'result':'Not OK' }"
-
-func SetLocationOfFile(location string) {
-	locationOfFile = location
+type Handlers struct {
+	OkResponse       string
+	NotFoundResponse string
+	DataAccess       interfaces.Data_access
 }
 
-func Get_RestApiRecords(response http.ResponseWriter, request *http.Request) {
+func Init(data_layer interfaces.Data_access) *Handlers {
+	dataLayer := new(Handlers)
+	dataLayer.DataAccess = data_layer
+	dataLayer.OkResponse = "{ 'result':'OK' }"
+	dataLayer.NotFoundResponse = "{ 'result':'Not OK' }"
+	return dataLayer
+}
+
+func (h Handlers) Get_RestApiRecords(response http.ResponseWriter, request *http.Request) {
 	if response == nil || request == nil {
 		return
 	}
@@ -33,10 +40,10 @@ func Get_RestApiRecords(response http.ResponseWriter, request *http.Request) {
 	var totalRecords = request.URL.Query()["totalRecords"] // default is 100
 	var isActive = request.URL.Query()["isActive"]         // default is all, true is all active and false is all inactive
 
-	Get_RestApiRecords_Impl(location, environment, q, page, totalRecords, isActive, response)
+	h.Get_RestApiRecords_Impl(location, environment, q, page, totalRecords, isActive, response)
 }
 
-func Get_RestApiRecords_Impl(location []string,
+func (h Handlers) Get_RestApiRecords_Impl(location []string,
 	environment []string,
 	q []string,
 	page []string,
@@ -48,7 +55,8 @@ func Get_RestApiRecords_Impl(location []string,
 		return
 	}
 
-	var restApis = data.GetFileOfRestApiDescriptions(locationOfFile)
+	fmt.Printf("Here is : %b\n", h.DataAccess == nil)
+	var restApis = h.ConvertToThing(h.DataAccess.Load("")) //  data.GetFileOfRestApiDescriptions(h.locationOfFile)
 	var totalRecordsNumber = 100
 	var pageNumber = 0
 
@@ -91,7 +99,7 @@ func Get_RestApiRecords_Impl(location []string,
 	json.NewEncoder(response).Encode(restApis)
 }
 
-func Post_RestApiRecords(response http.ResponseWriter, request *http.Request) {
+func (h Handlers) Post_RestApiRecords(response http.ResponseWriter, request *http.Request) {
 	if response == nil || request == nil {
 		return
 	}
@@ -99,22 +107,24 @@ func Post_RestApiRecords(response http.ResponseWriter, request *http.Request) {
 	var item = new(model.RestApiDescription)
 	json.NewDecoder(request.Body).Decode(item)
 
-	Post_RestApiRecords_Impl(item, response)
+	h.Post_RestApiRecords_Impl(item, response)
 }
 
-func Post_RestApiRecords_Impl(item *model.RestApiDescription, response http.ResponseWriter) {
+func (h Handlers) Post_RestApiRecords_Impl(item *model.RestApiDescription, response http.ResponseWriter) {
 	if response == nil {
 		return
 	}
 
-	var listOfApis = data.GetFileOfRestApiDescriptions(locationOfFile)
+	var listOfApis = h.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
 	item.Id = uuid.New()
 	listOfApis = append(listOfApis, *item)
-	data.WriteRestApiDescriptionsToFile(listOfApis, locationOfFile)
-	json.NewEncoder(response).Encode(OkResponse)
+	var data, _ = json.Marshal(listOfApis)
+	h.DataAccess.Save("", string(data))
+	//data.WriteRestApiDescriptionsToFile(listOfApis, locationOfFile)
+	json.NewEncoder(response).Encode(h.OkResponse)
 }
 
-func Put_RestApiRecords(response http.ResponseWriter, request *http.Request) {
+func (h Handlers) Put_RestApiRecords(response http.ResponseWriter, request *http.Request) {
 	if response == nil || request == nil {
 		return
 	}
@@ -122,53 +132,62 @@ func Put_RestApiRecords(response http.ResponseWriter, request *http.Request) {
 	var item = new(model.RestApiDescription)
 	json.NewDecoder(request.Body).Decode(item)
 	item.Id = GetId(request)
-	Put_RestApiRecords_Impl(item, response)
+	h.Put_RestApiRecords_Impl(item, response)
 }
 
-func Put_RestApiRecords_Impl(item *model.RestApiDescription, response http.ResponseWriter) {
+func (h Handlers) Put_RestApiRecords_Impl(item *model.RestApiDescription, response http.ResponseWriter) {
 	if response == nil {
 		return
 	}
 
-	var listOfApis = data.GetFileOfRestApiDescriptions(locationOfFile)
+	var listOfApis = h.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
 	var index = model.Find(listOfApis, item.Id)
 
 	if index == -1 {
 		response.WriteHeader(404)
-		json.NewEncoder(response).Encode(NotFoundResponse)
+		json.NewEncoder(response).Encode(h.NotFoundResponse)
 	} else {
 		listOfApis[index] = *item
-		data.WriteRestApiDescriptionsToFile(listOfApis, locationOfFile)
-		json.NewEncoder(response).Encode(OkResponse)
+		var data, _ = json.Marshal(listOfApis)
+		h.DataAccess.Save("", string(data)) //data.WriteRestApiDescriptionsToFile(listOfApis, locationOfFile)
+		json.NewEncoder(response).Encode(h.OkResponse)
 	}
 }
 
-func Delete_RestApiRecord(response http.ResponseWriter, request *http.Request) {
+func (h Handlers) Delete_RestApiRecord(response http.ResponseWriter, request *http.Request) {
 	if response == nil || request == nil {
 		return
 	}
 
 	var id = GetId(request)
-	Delete_RestApiRecord_Impl(id, response)
+	h.Delete_RestApiRecord_Impl(id, response)
 }
 
-func Delete_RestApiRecord_Impl(id string, response http.ResponseWriter) {
+func (h Handlers) Delete_RestApiRecord_Impl(id string, response http.ResponseWriter) {
 	if response == nil {
 		return
 	}
-	var listOfApis = data.GetFileOfRestApiDescriptions(locationOfFile)
+	var listOfApis = h.ConvertToThing(h.DataAccess.Load("")) //data.GetFileOfRestApiDescriptions(locationOfFile)
 	var index = model.Find(listOfApis, id)
 
 	if index == -1 {
 		response.WriteHeader(404)
-		json.NewEncoder(response).Encode(NotFoundResponse)
+		json.NewEncoder(response).Encode(h.NotFoundResponse)
 	} else {
 		listOfApis = model.Remove(listOfApis, index)
-		data.WriteRestApiDescriptionsToFile(listOfApis, locationOfFile)
-		json.NewEncoder(response).Encode(OkResponse)
+		var data, _ = json.Marshal(listOfApis)
+		h.DataAccess.Save("", string(data))
+		//data.WriteRestApiDescriptionsToFile(listOfApis, locationOfFile)
+		json.NewEncoder(response).Encode(h.OkResponse)
 	}
 }
 
 func GetId(r *http.Request) string {
 	return mux.Vars(r)["id"]
+}
+
+func (h Handlers) ConvertToThing(value string) []model.RestApiDescription {
+	var results = new([]model.RestApiDescription)
+	json.Unmarshal([]byte(value), results)
+	return *results
 }

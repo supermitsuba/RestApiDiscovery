@@ -1,6 +1,8 @@
 package controller
 
 import (
+	d "RestApiDiscovery/libs/data"
+	interfaces "RestApiDiscovery/libs/data/interfaces"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -14,7 +16,36 @@ type Route struct {
 
 type Routes []Route
 
+var h = Init(interfaces.Data_access(d.File_access{FileLocation: "data.json"}))
+
 func NewRouter() *mux.Router {
+
+	var routes = Routes{
+		Route{
+			"GetAllRestApiRecords",
+			"GET",
+			"/api/restapirecords",
+			h.Get_RestApiRecords,
+		},
+		Route{
+			"CreateNewRestApiRecord",
+			"POST",
+			"/api/restapirecords",
+			h.Post_RestApiRecords,
+		},
+		Route{
+			"UpdateRestApiRecord",
+			"PUT",
+			"/api/restapirecords/{id}",
+			h.Put_RestApiRecords,
+		},
+		Route{
+			"DeleteRestApiRecord",
+			"DELETE",
+			"/api/restapirecords/{id}",
+			h.Delete_RestApiRecord,
+		},
+	}
 
 	router := mux.NewRouter().StrictSlash(true)
 	for _, route := range routes {
@@ -26,31 +57,4 @@ func NewRouter() *mux.Router {
 	}
 
 	return router
-}
-
-var routes = Routes{
-	Route{
-		"GetAllRestApiRecords",
-		"GET",
-		"/api/restapirecords",
-		Get_RestApiRecords,
-	},
-	Route{
-		"CreateNewRestApiRecord",
-		"POST",
-		"/api/restapirecords",
-		Post_RestApiRecords,
-	},
-	Route{
-		"UpdateRestApiRecord",
-		"PUT",
-		"/api/restapirecords/{id}",
-		Put_RestApiRecords,
-	},
-	Route{
-		"DeleteRestApiRecord",
-		"DELETE",
-		"/api/restapirecords/{id}",
-		Delete_RestApiRecord,
-	},
 }
